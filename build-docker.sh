@@ -121,4 +121,7 @@ if [ "${PRESERVE_CONTAINER}" != "1" ]; then
 	${DOCKER} rm -v "${CONTAINER_NAME}"
 fi
 
+echo "Remove dangling docker images"
+${DOCKER} image prune -f
+
 echo "Done! Your image(s) should be in deploy/"

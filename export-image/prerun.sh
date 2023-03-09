@@ -31,7 +31,7 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
 
 	parted --script "${IMG_FILE}" mklabel msdos
 	parted --script "${IMG_FILE}" unit B mkpart primary fat32 "${BOOT_PART_START}" "$((BOOT_PART_START + BOOT_PART_SIZE - 1))"
-	parted --script "${IMG_FILE}" unit B mkpart primary ext4 "${ROOT_PART_START}" "$((ROOT_PART_START + ROOT_PART_SIZE - 1))"
+	parted --script "${IMG_FILE}" unit B mkpart primary btrfs "${ROOT_PART_START}" "$((ROOT_PART_START + ROOT_PART_SIZE - 1))"
 
 	echo "Creating loop device..."
 	cnt=0
@@ -49,16 +49,22 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
 	BOOT_DEV="${LOOP_DEV}p1"
 	ROOT_DEV="${LOOP_DEV}p2"
 
-	ROOT_FEATURES="^huge_file"
-	for FEATURE in 64bit; do
-	if grep -q "$FEATURE" /etc/mke2fs.conf; then
-		ROOT_FEATURES="^$FEATURE,$ROOT_FEATURES"
-	fi
-	done
+	mkfs.btrfs -L rootfs "$ROOT_DEV" > /dev/null
 	mkdosfs -n bootfs -F 32 -s 4 -v "$BOOT_DEV" > /dev/null
-	mkfs.ext4 -L rootfs -O "$ROOT_FEATURES" "$ROOT_DEV" > /dev/null
 
-	mount -v "$ROOT_DEV" "${ROOTFS_DIR}" -t ext4
+	# Mount top-level volume for setting up subvolumes
+	mount -v "$ROOT_DEV" "${ROOTFS_DIR}" -t btrfs
+	btrfs subvolume create "${ROOTFS_DIR}/root"
+	btrfs subvolume create "${ROOTFS_DIR}/home"
+	btrfs subvolume create "${ROOTFS_DIR}/var"
+	umount -v "${ROOTFS_DIR}"
+	# Mount subvolumes
+	mount -v -o subvol=/root "$ROOT_DEV" "${ROOTFS_DIR}" -t btrfs
+	mkdir -p "${ROOTFS_DIR}/home"
+	mount -v -o subvol=/home "$ROOT_DEV" "${ROOTFS_DIR}/home" -t btrfs
+	mkdir -p "${ROOTFS_DIR}/var"
+	mount -v -o subvol=/var "$ROOT_DEV" "${ROOTFS_DIR}/var" -t btrfs
+
 	mkdir -p "${ROOTFS_DIR}/boot"
 	mount -v "$BOOT_DEV" "${ROOTFS_DIR}/boot" -t vfat
 
