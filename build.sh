@@ -287,7 +287,20 @@ if [ "$SETFCAP" != "1" ]; then
 	export CAPSH_ARG="--drop=cap_setfcap"
 fi
 
+export KLIPPO_DIR="$(realpath -q "${KLIPPO_DIR:-../klippo}")"
+
 dependencies_check "${BASE_DIR}/depends"
+
+# Check whether klippo is present
+if [[ ! -x "${KLIPPO_DIR}/setup/setup_klippo.py" ]]; then
+	# When building with Docker, a klippo volume is mounted at /klippo
+	if [[ -x /klippo/setup/setup_klippo.py ]]; then
+		KLIPPO_DIR="/klippo"
+	else
+		echo "Could not find klippo with install script at ${KLIPPO_DIR}"
+		exit 1
+	fi
+fi
 
 #check username is valid
 if [[ ! "$FIRST_USER_NAME" =~ ^[a-z][-a-z0-9_]*$ ]]; then
