@@ -1,7 +1,21 @@
-# pi-gen
+# Klippo Image generation tool
 
-Tool used to create Raspberry Pi OS images. (Previously known as Raspbian).
+Forked from [pi-gen](https://github.com/RPi-Distro/pi-gen).
+Generates Raspberry Pi OS images modified to include an installation of the
+[klippo](https://github.com/D4SK/klippo) 3D printing software.
 
+
+## Overview of changes from pi-gen
+
+* The image is based on Raspbian-Lite, meaning stages 3 to 5 have been removed
+* Stage 3 instead installs Klippo
+* The root partition uses the btrfs filesystem instead of ext4
+* Exporting of NOOBS images has been disabled
+
+### Providing a klippo source
+
+Currently, the klippo repository must be present locally. It's location can be
+specified using `KLIPPO_DIR` (see [Config](#Config)).
 
 ## Dependencies
 
@@ -15,7 +29,7 @@ To install the required dependencies for `pi-gen` you should run:
 ```bash
 apt-get install coreutils quilt parted qemu-user-static debootstrap zerofree zip \
 dosfstools libarchive-tools libcap2-bin grep rsync xz-utils file git curl bc \
-qemu-utils kpartx gpg pigz
+qemu-utils kpartx gpg pigz btrfs-progs
 ```
 
 The file `depends` contains a list of tools needed.  The format of this
@@ -27,7 +41,7 @@ Getting started is as simple as cloning this repository on your build machine. Y
 can do so with:
 
 ```bash
-git clone https://github.com/RPI-Distro/pi-gen.git
+git clone https://github.com/Gobbel2000/klippo-image.git
 ```
 
 `--depth 1` can be added afer `git clone` to create a shallow clone, only containing
@@ -54,6 +68,13 @@ The following environment variables are supported:
    `IMG_NAME=Raspbian` is logical for an unmodified RPi-Distro/pi-gen build,
    but you should use something else for a customized version.  Export files
    in stages may add suffixes to `IMG_NAME`.
+
+* `KLIPPO_DIR` (Default: `"$BASE_DIR/../klippo"`)
+
+   Location of the klippo repository, defaults to the directory `klippo` next
+   to pi-gen. When using `build-docker.sh`, this directory is mounted at
+   `/klippo` in the container. For that reason, `/klippo` is also searched for
+   a valid source if `KLIPPO_DIR` does not exist in the container.
 
 * `USE_QCOW2` **EXPERIMENTAL** (Default: `0` )
 
@@ -372,6 +393,13 @@ maintenance and allows for more easy customization.
    pi-gen.  These are understandable for Raspbian's target audience, but if
    you were looking for something between truly minimal and Raspbian-Lite,
    here's where you start trimming.
+
+ - **Stage 3** - Klippo installation. This stage copies over the klippo
+   repository into the image and executes its setup script. At this stage the
+   final klippo image is generated.
+
+The following sections are part of the original pi-gen and have been
+removed/replaced in this modified version.
 
  - **Stage 3** - desktop system.  Here's where you get the full desktop system
    with X11 and LXDE, web browsers, git for development, Raspbian custom UI

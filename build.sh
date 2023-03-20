@@ -287,7 +287,7 @@ if [ "$SETFCAP" != "1" ]; then
 	export CAPSH_ARG="--drop=cap_setfcap"
 fi
 
-export KLIPPO_DIR="$(realpath -q "${KLIPPO_DIR:-../klippo}")"
+export KLIPPO_DIR="$(realpath -q "${KLIPPO_DIR:-${BASE_DIR}/../klippo}")"
 
 dependencies_check "${BASE_DIR}/depends"
 
