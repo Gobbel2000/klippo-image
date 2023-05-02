@@ -1,6 +1,6 @@
 proc            /proc           proc    defaults          0       0
-BOOTDEV  /boot           vfat    defaults          0       2
-ROOTDEV  /                   btrfs   subvol=/root,defaults,noatime    0   0
-ROOTDEV  /home               btrfs   subvol=/home,defaults,noatime    0   0
-ROOTDEV  /var                btrfs   subvol=/var,defaults,noatime     0   0
-ROOTDEV  /root/btrfs-top-lvl btrfs   subvol=/,defaults,noauto,noatime 0   0
+BOOTDEV  /boot          vfat    defaults          0       2
+ROOTDEV  /              btrfs   subvol=/root,defaults,noatime    0   0
+ROOTDEV  /home          btrfs   subvol=/home,defaults,noatime    0   0
+ROOTDEV  /var           btrfs   subvol=/var,defaults,noatime     0   0
+ROOTDEV  /mnt/btrfs     btrfs   subvol=/,defaults,noauto,noatime 0   0
