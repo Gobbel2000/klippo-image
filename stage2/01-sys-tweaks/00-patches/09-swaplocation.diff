@@ -1,0 +1,15 @@
+Index: stage2/rootfs/etc/dphys-swapfile
+===================================================================
+--- stage2.orig/rootfs/etc/dphys-swapfile
++++ stage2/rootfs/etc/dphys-swapfile
+@@ -8,8 +8,8 @@
+ # the default settings are added as commented out CONF_*=* lines
+ 
+ 
+-# where we want the swapfile to be, this is the default
+-#CONF_SWAPFILE=/var/swap
++# where we want the swapfile to be
++CONF_SWAPFILE=/var/swapfile/swap
+ 
+ # set size to absolute value, leaving empty (default) then uses computed value
+ #   you most likely don't want this, unless you have an special disk situation
