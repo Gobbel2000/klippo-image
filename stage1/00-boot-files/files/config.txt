@@ -68,6 +68,9 @@ arm_64bit=1
 # Disable compensation for displays with overscan
 disable_overscan=1
 
+# Enable firmware watchdog
+dtparam=watchdog=on
+
 [cm4]
 # Enable host mode on the 2711 built-in XHCI USB controller.
 # This line should be removed if the legacy DWC2 controller is required
