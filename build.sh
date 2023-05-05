@@ -110,6 +110,11 @@ run_stage(){
 		fi
 	fi
 
+	if [ ! -f SKIP_IMAGES ]; then
+		if [ -f "${STAGE_DIR}/EXPORT_IMAGE" ]; then
+			EXPORT_DIRS="${EXPORT_DIRS} ${STAGE_DIR}"
+		fi
+	fi
 	if [ ! -f SKIP ]; then
 		if [ "${CLEAN}" = "1" ] && [ "${USE_QCOW2}" = "0" ] ; then
 			if [ -d "${ROOTFS_DIR}" ]; then
@@ -126,11 +131,6 @@ run_stage(){
 				run_sub_stage
 			fi
 		done
-		if [ ! -f SKIP_IMAGES ]; then
-			if [ -f "${STAGE_DIR}/EXPORT_IMAGE" ]; then
-				EXPORT_DIRS="${EXPORT_DIRS} ${STAGE_DIR}"
-			fi
-		fi
 	fi
 
 	if [ "${USE_QCOW2}" = "1" ]; then
