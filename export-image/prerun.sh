@@ -56,11 +56,15 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
 	mount -v "$ROOT_DEV" "${ROOTFS_DIR}" -t btrfs
 	btrfs subvolume create "${ROOTFS_DIR}/root"
 	btrfs subvolume create "${ROOTFS_DIR}/home"
+	btrfs subvolume create "${ROOTFS_DIR}/swap"
 	umount -v "${ROOTFS_DIR}"
 	# Mount subvolumes
 	mount -v -o subvol=/root "$ROOT_DEV" "${ROOTFS_DIR}" -t btrfs
 	mkdir -p "${ROOTFS_DIR}/home"
 	mount -v -o subvol=/home "$ROOT_DEV" "${ROOTFS_DIR}/home" -t btrfs
+	# Create a mountpoint for the swapfile subvolume, but there is no need to
+	# mount it here.
+	mkdir -p "${ROOTFS_DIR}/var/swapfile"
 
 	mkdir -p "${ROOTFS_DIR}/boot"
 	mount -v "$BOOT_DEV" "${ROOTFS_DIR}/boot" -t vfat
