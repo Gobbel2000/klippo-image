@@ -8,6 +8,9 @@ fi
 
 echo "Running klippo setup script..."
 on_chroot << EOF
-/opt/klippo/setup/setup_klippo.py -v --graphics-provider sdl2
+/opt/klippo/setup/setup_klippo.py -v
 EOF
 echo "Klippo setup script completed"
+
+# Remove pip cache
+rm -rf "${ROOTFS_DIR}/home/${FIRST_USER_NAME}/.cache/pip"
