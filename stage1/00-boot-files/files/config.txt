@@ -68,8 +68,22 @@ arm_64bit=1
 # Disable compensation for displays with overscan
 disable_overscan=1
 
+
+#
+# Changes in klippo-image to the default config.txt:
+#
+
 # Enable firmware watchdog
 dtparam=watchdog=on
+
+# Disable rainbow splash screen at boot
+disable_splash = 1
+
+# Enable additional UARTs
+dtoverlay=uart2
+dtoverlay=uart3
+dtoverlay=uart4
+
 
 [cm4]
 # Enable host mode on the 2711 built-in XHCI USB controller.
